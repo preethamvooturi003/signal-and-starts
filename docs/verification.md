@@ -18,8 +18,8 @@ Recorded 29 October 2026. This file distinguishes executed local checks from sup
 | Partial month | September showed 18/30 days with attainment and growth withheld |
 | Media | H.264 MP4, 1920×1080, 30 fps, exactly 40 seconds; a sampled frame inspected |
 | Secret/account scan | No actual Snowflake account identifiers or credentials in publishable source |
-| GitHub repository | Created and verified at `preethamvooturi003/signal-and-starts`; local commit exists; first push blocked by invalid CLI credentials and integration HTTP 403 |
-| GitHub-hosted CI | See the repository Actions page for actual remote run status; local success does not imply remote success |
+| GitHub repository | Published and verified at `preethamvooturi003/signal-and-starts`, application commit `a695718277e68f787bbd66fdc1193ad4a053a328`; local and remote tree hashes match |
+| GitHub-hosted CI | [Run 40813977529](https://github.com/preethamvooturi003/signal-and-starts/actions/runs/40813977529) completed successfully for the published application commit |
 | Snowflake authentication | Not established during the initial build |
 | Snowflake DDL/load/cache refresh | Supplied and locally compiled; not executed against the account |
 | Live AI responses | Not executed or semantically evaluated; offline and failure labels verified |
@@ -27,3 +27,5 @@ Recorded 29 October 2026. This file distinguishes executed local checks from sup
 The demo video is silent with burned-in captions and separate SRT captions. It is an edited still-capture walkthrough of the actual app, not continuous screen recording. The GitHub end card uses the verified repository URL. The LinkedIn draft has not been posted.
 
 No real-world cost savings, sales growth, clinical accuracy, deployment, patient outcome or causal effect is claimed.
+
+Publication initially failed because saved command-line credentials were invalid and the integration returned HTTP 403. After the user reconnected GitHub, the authenticated integration published all 43 tracked files. The original local build commits remain on the `local-build` branch; `main` tracks the published GitHub branch. GitHub publication does not authenticate the separate Snowflake integration.
