@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Signal & Starts | Commercial intelligence</title><meta name="description" content="An independent synthetic pharmaceutical analytics portfolio by Preetham Vooturi."><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="/" aria-label="Signal and Starts home"><span class="brand-mark">s<span>↗</span></span><span>signal <i>&</i> starts<small>COMMERCIAL INTELLIGENCE</small></span></a>
+  <div class="workspace">WORKSPACE</div>
+  <button class="nav active" id="overview-nav"><span>▦</span> Performance overview</button>
+  <button class="nav" id="investigation-nav"><span>✧</span> Investigation room</button>
+  <button class="nav" id="sources-nav"><span>▤</span> Data & definitions</button>
+  <div class="sidebar-context"><span class="eyebrow">FICTIONAL MARKET</span><strong>Asteria</strong><span>Breast cancer · Commercial demo</span><div class="brand-chip"><span class="dot"></span> Lumora <small>Focus brand</small></div></div>
+  <div class="sidebar-bottom"><span class="synthetic-pill">Demo · Synthetic data</span><p>Built by Preetham Vooturi<br><span>Independent portfolio project</span></p></div>
+</aside>
+<main>
+  <header class="topbar"><span><span class="breadcrumb">Workspace / </span>Performance overview</span><div class="topbar-right"><span class="local-badge"><span class="dot"></span> Local evidence</span><span class="avatar" title="Preetham Vooturi">PV</span></div></header>
+  <div class="content">
+    <div class="page-heading"><div><div class="eyebrow">LUMORA · ASTERIA</div><h1>See the gap. Find the signal.</h1><p>Turn commercial performance into the next evidence-backed question.</p></div><button class="button secondary" id="definitions-top">ⓘ Metric guide</button></div>
+    <section class="question-banner"><div class="question-icon">↗</div><div><span class="eyebrow">THE BUSINESS QUESTION</span><h2>Why are new-to-brand starts below target<br class="wide-break"> despite increased HCP engagement?</h2></div><button class="button primary" id="investigate"><span>✧</span> Investigate the gap <span>↗</span></button></section>
+    <div class="filter-row"><div class="filters"><label>Period <select id="month" aria-label="Reporting month"></select></label><label>Scope <select id="territory" aria-label="Territory"></select></label></div><span id="period-status" class="period-status">Closed month</span></div>
+    <div id="error" class="error hidden" role="alert"></div>
+    <section class="metrics" aria-label="Key performance indicators" id="metrics"></section>
+    <div id="quality-banner" class="quality-banner"></div>
+    <div class="dashboard-grid">
+      <section class="panel trend-panel"><div class="panel-heading"><div><h2>New-to-brand starts</h2><p>Actual vs beginning-of-year target</p></div><span class="legend"><i class="actual-key"></i> Actual <i class="target-key"></i> Target</span></div><div id="trend" class="trend" role="img" aria-label="Twelve month actual and target starts trend"></div><div class="chart-footer"><span>Naive starts + incoming switches</span><button class="text-button source-link" data-source="P01">View source ↗</button></div></section>
+      <section class="panel ranking-panel"><div class="panel-heading"><div><h2>Where is the gap?</h2><p>Largest territory shortfalls · selected month</p></div><span class="small-label">STARTS</span></div><div id="ranking"></div><div class="ranking-footer">Select a territory to focus the dashboard <span>↗</span></div></section>
+      <section class="panel mix-panel"><div class="panel-heading"><div><h2>Unpack the shortfall</h2><p>Which start category contributes to the gap?</p></div><button class="text-button source-link" data-source="P01">Source ↗</button></div><div id="mix"></div></section>
+      <section class="panel signal-panel"><div class="eyebrow">FROM REPORTING TO INVESTIGATION</div><div class="signal-orb">✧</div><h2>More engagement.<br>What changed underneath?</h2><p>Compare start mix, HCP coverage and field observations. Follow the evidence to a better question.</p><button id="focus-nordhaven" class="text-button">Explore Nordhaven <span>→</span></button></section>
+    </div>
+    <footer class="page-footer"><span>Demo · Synthetic data <span class="separator">/</span> No patient or employer data</span><span id="dataset-meta">36 months · Reproducible market</span></footer>
+  </div>
+</main>
+<div class="scrim hidden" id="chat-scrim"></div>
+<aside id="chat" class="chat hidden" aria-label="Investigation room" aria-modal="true" role="dialog">
+  <div class="chat-header"><div><div class="eyebrow">EVIDENCE WORKSPACE</div><h2>Investigation room <span>✧</span></h2></div><button class="icon-button" id="close-chat" aria-label="Close investigation">×</button></div>
+  <div class="chat-context"><span id="chat-scope"></span><span id="ai-mode">Offline evidence assistant</span></div>
+  <div class="mode-notice" id="mode-notice">Deterministic analysis · No live LLM connected. Enable Snowflake AI to use a language model.</div>
+  <div class="messages" id="messages" aria-live="polite"></div>
+  <div class="suggestions" id="suggestions"><button>What should we investigate next?</button><button>How reliable is the data?</button></div>
+  <form class="chat-form" id="chat-form"><label class="sr-only" for="question">Ask a follow-up question</label><textarea id="question" rows="2" maxlength="1200" placeholder="Ask a follow-up about this evidence…"></textarea><button class="send-button" id="send" type="submit" aria-label="Send question">↑</button></form>
+  <div class="chat-footer">Demo · Synthetic data · Association ≠ causation</div>
+</aside>
+<dialog id="source-dialog"><div class="dialog-header"><div><div class="eyebrow" id="source-id">DATA & DEFINITIONS</div><h2 id="source-title">Metric guide</h2></div><button class="icon-button" id="close-source" aria-label="Close source">×</button></div><div id="source-body"></div></dialog>
+</body></html>

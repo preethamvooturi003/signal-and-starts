@@ -1,0 +1,199 @@
+{
+  "scope": "Offline deterministic scenario evaluation; not an evaluation of live LLM quality or clinical validity",
+  "cases": 10,
+  "passed": 10,
+  "precision": 1.0,
+  "recall": 1.0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "results": [
+    {
+      "case": "uneven_coverage",
+      "month": "2026-08",
+      "territory": "T01",
+      "expected": [
+        "process_hypothesis",
+        "switch_decline",
+        "uneven_engagement"
+      ],
+      "detected": [
+        "process_hypothesis",
+        "switch_decline",
+        "uneven_engagement"
+      ],
+      "pass": true,
+      "citations": [
+        "P01",
+        "M01",
+        "E01",
+        "F01"
+      ],
+      "mode": "offline"
+    },
+    {
+      "case": "process_barrier",
+      "month": "2026-08",
+      "territory": "T02",
+      "expected": [
+        "process_hypothesis",
+        "switch_decline"
+      ],
+      "detected": [
+        "process_hypothesis",
+        "switch_decline"
+      ],
+      "pass": true,
+      "citations": [
+        "P01",
+        "M01",
+        "E01",
+        "C01",
+        "F01"
+      ],
+      "mode": "offline"
+    },
+    {
+      "case": "switch_mix",
+      "month": "2026-08",
+      "territory": "T03",
+      "expected": [
+        "switch_decline"
+      ],
+      "detected": [
+        "switch_decline"
+      ],
+      "pass": true,
+      "citations": [
+        "P01",
+        "M01",
+        "E01",
+        "C01"
+      ],
+      "mode": "offline"
+    },
+    {
+      "case": "target_stretch",
+      "month": "2026-08",
+      "territory": "T04",
+      "expected": [
+        "target_stretch"
+      ],
+      "detected": [
+        "target_stretch"
+      ],
+      "pass": true,
+      "citations": [
+        "P01",
+        "M01",
+        "E01"
+      ],
+      "mode": "offline"
+    },
+    {
+      "case": "control",
+      "month": "2026-08",
+      "territory": "T05",
+      "expected": [],
+      "detected": [],
+      "pass": true,
+      "citations": [
+        "P01",
+        "M01",
+        "E01",
+        "C01"
+      ],
+      "mode": "offline"
+    },
+    {
+      "case": "delayed_feed",
+      "month": "2026-08",
+      "territory": "T06",
+      "expected": [
+        "competitor_unavailable"
+      ],
+      "detected": [
+        "competitor_unavailable"
+      ],
+      "pass": true,
+      "citations": [
+        "P01",
+        "M01",
+        "E01",
+        "C01",
+        "S01",
+        "D01"
+      ],
+      "mode": "offline"
+    },
+    {
+      "case": "missing_survey",
+      "month": "2026-08",
+      "territory": "T08",
+      "expected": [
+        "survey_unavailable"
+      ],
+      "detected": [
+        "survey_unavailable"
+      ],
+      "pass": true,
+      "citations": [
+        "P01",
+        "M01",
+        "E01",
+        "C01",
+        "S01",
+        "D01"
+      ],
+      "mode": "offline"
+    },
+    {
+      "case": "partial_period",
+      "month": "2026-09",
+      "territory": "T05",
+      "expected": [
+        "partial_period"
+      ],
+      "detected": [
+        "partial_period"
+      ],
+      "pass": true,
+      "citations": [
+        "P01",
+        "C01",
+        "S01",
+        "D01"
+      ],
+      "mode": "offline"
+    },
+    {
+      "case": "before_change",
+      "month": "2026-03",
+      "territory": "T01",
+      "expected": [],
+      "detected": [],
+      "pass": true,
+      "citations": [
+        "P01",
+        "M01",
+        "E01",
+        "C01"
+      ],
+      "mode": "offline"
+    },
+    {
+      "case": "earliest_period",
+      "month": "2023-10",
+      "territory": "T05",
+      "expected": [],
+      "detected": [],
+      "pass": true,
+      "citations": [
+        "P01",
+        "M01",
+        "C01",
+        "S01"
+      ],
+      "mode": "offline"
+    }
+  ]
+}

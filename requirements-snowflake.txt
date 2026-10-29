@@ -1,0 +1,2 @@
+# Optional only. The local app and tests use the Python standard library.
+snowflake-connector-python>=3.12,<5
