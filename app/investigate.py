@@ -1,8 +1,9 @@
 """Evidence-led conversation. Offline mode is explicitly a deterministic assistant."""
 import re
 from .analytics import evidence
+from .workflow import prepare,validate_question
 
-SOURCE_IDS={"P01","M01","E01","C01","S01","F01","D01"}
+SOURCE_IDS={"P01","M01","E01","C01","S01","F01","D01","K01","V01","Q01"}
 
 
 def signals(ev):
@@ -98,9 +99,40 @@ def offline_answer(ev,question):
 
 
 def investigate(db,question,month,territory,history=None,ai=None):
+    clarification=validate_question(db,question,month,territory)
+    if clarification:
+        return {'month':month,'territory':territory,'title':'Clarify the investigation','paragraphs':[clarification],
+          'mode':'offline','mode_label':'Question validation','ai_status':'not_requested','signals':[],'sources':[],
+          'trace':[{'stage':'validate','message':clarification}],'checks':[],'_source_cards':[]}
     territory=scope_for(db,question,territory)
-    ev=evidence(db,month,territory)
+    if getattr(ai,'native_agent',False):
+        try:
+            native=ai.run(question,month,territory,history or [])
+            return {'month':month,'territory':territory,'title':'Knowledge-led Snowflake investigation',
+              'paragraphs':native['paragraphs'],'mode':'snowflake_agent','mode_label':'Live Cortex Agent · Analyst + Search',
+              'ai_status':'success','signals':[],'checks':[],
+              'trace':native['trace']+[{'stage':'synthesize','message':'Returned interpretation with actual query IDs and historical insight provenance; review factual accuracy.'}],
+              'sources':[{'id':c['id'],'title':c['title'],'row_count':len(c['rows'])} for c in native['cards']],
+              '_source_cards':native['cards']}
+        except Exception as exc:
+            print(f'Native Cortex Agent failed ({type(exc).__name__}); using explicitly labeled offline workflow.',flush=True)
+            fallback=investigate(db,question,month,territory,history,None)
+            fallback.update({'ai_status':'failed','ai_error':'Native Analyst/Search investigation failed or lacked required provenance. Showing offline FTS5 retrieval and local SQL; no live answer is claimed.'})
+            return fallback
+    ev,trace,checks=prepare(db,question,month,territory)
     result=offline_answer(ev,question)
+    knowledge=next(c for c in ev['sources'] if c['id']=='K01')
+    probe=next(c for c in ev['sources'] if c['id']=='V01')
+    if knowledge['rows']:
+        result['paragraphs'].append('Historical manager-style insights were retrieved before the metric checks. They suggest tests for coverage, switching, planning and volatility; their explanations are not accepted as current facts. [K01]')
+        if probe['cv_pct'] is not None:
+            result['paragraphs'].append(f"The all-brand market coefficient of variation across six closed months is {probe['cv_pct']}%. "+
+              ('That weakens the historical volatility narrative under the demo’s 15% heuristic. ' if probe['cv_pct']<15 else 'Variability alone does not establish a cause. ')+
+              'Trend and seasonality are not removed. [V01] [K01]')
+    else:
+        result['paragraphs'].append('No eligible historical insight was available before this reporting cutoff. The answer uses current metric evidence without inventing past context. [K01]')
+    result['trace']=trace+[{'stage':'synthesize','message':'Separated observed patterns, historical hypotheses, counterevidence and unresolved questions.'}]
+    result['checks']=checks
     result.update({"month":month,"territory":territory,"mode":"offline","mode_label":"Offline evidence assistant · deterministic, no LLM","ai_status":"not_requested"})
     if ai is not None:
         # Errors remain visible; never masquerade a rule response as live AI.
@@ -111,5 +143,8 @@ def investigate(db,question,month,territory,history=None,ai=None):
             print(f"Snowflake AI failed ({type(exc).__name__}); offline analysis remains labeled. No prompt or credential logged.",flush=True)
             result.update({"ai_status":"failed","ai_error":"Snowflake AI did not return a validated answer. Showing the labeled offline analysis. Check local server logs or the Snowflake setup guide."})
     cited=set(re.findall(r"\[([A-Z]\d{2})\]"," ".join(result["paragraphs"])))
+    cited.update(c['source'] for c in checks)
+    cited.add('K01')
     result["sources"]=[{"id":c["id"],"title":c["title"],"row_count":len(c["rows"])} for c in ev["sources"] if c["id"] in cited]
+    result['_source_cards']=[c for c in ev['sources'] if c['id'] in cited]
     return result

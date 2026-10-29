@@ -121,6 +121,11 @@ class HTTPTests(unittest.TestCase):
             a=post({'question':'Why is Nordhaven below target?','month':'2026-08','territory':'ALL'})
             b=post({'question':'What should we investigate next?','month':'2026-08','territory':'ALL','session_id':a['session_id']})
             self.assertEqual(b['territory'],'T01');self.assertEqual(a['session_id'],b['session_id'])
+            snapshot=json.load(urlopen(base+'/api/source?month=2026-08&territory=T01&id=K01&evidence_id='+a['evidence_id']))
+            self.assertTrue(all(r['period_month']<'2026-08' for r in snapshot['rows']))
+            with self.assertRaises(HTTPError) as wrong_scope:
+                urlopen(base+'/api/source?month=2026-08&territory=T02&id=K01&evidence_id='+a['evidence_id'])
+            self.assertEqual(wrong_scope.exception.code,404)
             source=json.load(urlopen(base+'/api/source?month=2026-08&territory=T01&id=E01'))
             self.assertEqual(source['row_count'],100);self.assertEqual(source['comparison']['prior_contacts'],470)
             self.assertIn(b'hcp_id',urlopen(base+'/api/source?month=2026-08&territory=T01&id=E01&format=csv').read())

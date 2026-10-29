@@ -1,5 +1,7 @@
 # Initial build verification record
 
+Version 2 update, 29 October 2026: **19 automated tests passed**, with the original **10/10 scenario evaluations** still passing. The additional Insights Knowledge Base has 2,592 synthetic manager-style documents. Offline retrieval/query/recheck behavior and the native Agent/Analyst/Search request/response contracts were tested; the native contracts use mocked responses. Live Snowflake provisioning, SQL DDL and model execution remain unverified because no connector installation or authenticated named connection is available. See [knowledge-first architecture](knowledge-first-architecture.md).
+
 Recorded 29 October 2026. This file distinguishes executed local checks from supplied integrations.
 
 | Check | Result |

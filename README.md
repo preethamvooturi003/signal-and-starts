@@ -6,7 +6,11 @@ Why are new-to-brand starts below target despite increased HCP engagement? This 
 
 **Demo · Synthetic data.** All brands, HCPs, territories, activities, surveys and field observations are generated. No patient records, employer data, clinical model or real business results are used.
 
+**Version 2: knowledge-first investigation.** Questions now pass validation, retrieve historical manager-style insights, test their hypotheses against metrics, recheck alternatives and return a visible execution trail. The synthetic Insights Knowledge Base has **2,592 versioned documents**, separate from the 254,356 market records. The native Snowflake path uses **Cortex Agents + Cortex Analyst + Cortex Search**; it is implemented and contract-tested but has not been authenticated or run in the account. The local substitute uses SQLite FTS5 and deterministic SQL, clearly labeled offline. See the [new architecture and setup](docs/knowledge-first-architecture.md).
+
 ![Signal & Starts commercial dashboard](artifacts/dashboard.jpg)
+
+![Knowledge-first investigation trail](artifacts/knowledge-investigation.jpg)
 
 ## Run in one command
 
@@ -57,6 +61,10 @@ Ask **“What should we investigate next?”**, then open an evidence citation. 
 ### Honest AI modes
 
 **Default: offline evidence assistant.** This is deterministic code over calculated evidence, with a supported question router and server-side conversational scope. It is **not a language model**. It handles starts, targets, switches, engagement, surveys, competitor activity, data quality and next checks. It asks for a narrower question outside those topics.
+
+The offline flow retrieves eligible prior-period insight chunks before metric calculation, checks coverage/mix/targets and a six-month market-variability narrative, then retrieves counterevidence. Open **Investigation trail** to inspect checks, or **Insights knowledge base** to inspect the synthetic source documents. Chat citations use frozen response-specific evidence snapshots. Python's SQLite build must include FTS5, as it does in the verified local and CI environments.
+
+**Native Snowflake mode:** `SIGNAL_AI_MODE=snowflake_agent` runs an explicit Cortex Search preflight followed by a Cortex Agent configured with Analyst and Search tools. It requires the governed semantic view, Search service and dedicated read-only role. Native answers require executed-query provenance and a post-query Search recheck. The adapter uses the documented SQL `AGENT_RUN` wrapper through the existing secure named connection; service setup is explicit and can incur AI/Search charges. See [knowledge-first setup](docs/knowledge-first-architecture.md).
 
 **Optional: live Snowflake AI.** `SIGNAL_AI_MODE=snowflake` enables `AI_COMPLETE` over a bounded evidence snapshot and prior turns. Source IDs are checked; semantic and numeric correctness still require review. Failures display a warning and explicitly labeled offline analysis. The app never claims that a configured connection is a verified live connection.
 

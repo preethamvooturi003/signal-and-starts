@@ -47,7 +47,7 @@ class SnowflakeAI:
             if not isinstance(answer,str) or not answer.strip():
                 raise ValueError("Empty AI response")
             citations=set(re.findall(r"\[([A-Z]\d{2})\]",answer))
-            if not citations or not citations.issubset(SOURCE_IDS):
+            if not citations or not citations.issubset({c['id'] for c in ev['sources']}):
                 raise ValueError("Unrecognized or absent citations")
             # Citation IDs are checked; semantic/numeric correctness still requires review.
             self.cache[key]=answer

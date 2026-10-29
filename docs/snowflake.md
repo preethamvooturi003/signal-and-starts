@@ -1,5 +1,7 @@
 # Optional Snowflake setup
 
+For the new native **Cortex Agent + Cortex Analyst + Cortex Search** flow, complete this base connection/market setup first, then follow [knowledge-first setup](knowledge-first-architecture.md#setup-and-trial-cost). The older `SIGNAL_AI_MODE=snowflake` path below remains a direct AI_COMPLETE adapter; `snowflake_agent` selects the new orchestration.
+
 **Initial build status: local app tested; Snowflake authentication and live model execution not completed.** Account identifiers do not authenticate a programmatic session. The project contains no password, token, account-specific host or private key. Do not paste secrets into a chat or commit them.
 
 The application uses current `AI_COMPLETE` syntax. Model availability, region access, trial entitlements, privileges and billing must be checked in the actual account. The default model name is configurable, not a guarantee of availability. Official references were checked during the build on 29 October 2026.

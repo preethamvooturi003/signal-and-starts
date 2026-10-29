@@ -15,6 +15,7 @@ from .investigate import investigate
 
 STATIC=Path(__file__).resolve().parents[1]/"web"
 SESSIONS={}; LOCK=threading.Lock()
+EVIDENCE={}
 AI=None
 
 
@@ -38,13 +39,27 @@ class Handler(BaseHTTPRequestHandler):
         month=q.get("month",["2026-08"])[0]; tid=q.get("territory",["ALL"])[0]
         try:
             if url.path=="/api/health":
-                return self.send(200,{"ok":True,"data_backend":"local SQLite","ai_mode":"snowflake_configured_unverified" if AI else "offline","synthetic":True})
+                ai_mode=('snowflake_agent_configured_unverified' if getattr(AI,'native_agent',False) else 'snowflake_configured_unverified') if AI else 'offline'
+                return self.send(200,{"ok":True,"data_backend":"local SQLite","ai_mode":ai_mode,"synthetic":True})
             if url.path=="/api/dashboard":
                 with connect(self.server.db_path) as db:
                     return self.send(200,dashboard(db,month,tid))
             if url.path=="/api/source":
                 with connect(self.server.db_path) as db:
-                    cards=evidence(db,month,tid)["sources"]
+                    snapshot=q.get('evidence_id',[''])[0]
+                    if snapshot:
+                        with LOCK: saved=EVIDENCE.get(snapshot)
+                        if saved is None or saved['month']!=month or saved['territory']!=tid:
+                            return self.send(404,{'error':'Evidence snapshot expired or scope mismatched. Run the investigation again.'})
+                        cards=saved['cards']
+                    else:
+                        cards=evidence(db,month,tid)["sources"]
+                        if q.get('id')==['K01']:
+                            from .knowledge import retrieve
+                            cards.append({'id':'K01','title':'Insights Knowledge Base · prior-period manager-style hypotheses',
+                              'tables':['insight_chunks'],'rows':retrieve('starts engagement targets market',month,tid),
+                              'sql':'Offline FTS5 retrieval with scope, prior-period and publication-cutoff filters',
+                              'parameters':{'month':month,'territory':tid}})
                     card=next((c for c in cards if c["id"]==q.get("id",[""])[0]),None)
                     if card is None:
                         raise ValueError("Unknown source ID")
@@ -97,6 +112,10 @@ class Handler(BaseHTTPRequestHandler):
             with LOCK:
                 session["territory"]=result["territory"]
                 session["history"]=(history+[{"role":"user","content":question},{"role":"assistant","content":"\n".join(result["paragraphs"])}])[-8:]
+                evidence_id=uuid.uuid4().hex
+                if len(EVIDENCE)>=200:EVIDENCE.pop(next(iter(EVIDENCE)))
+                EVIDENCE[evidence_id]={'month':month,'territory':result['territory'],'cards':result.pop('_source_cards',[])}
+                result['evidence_id']=evidence_id
             self.send(200,{**result,"session_id":session_id})
         except (ValueError,TypeError,KeyError,json.JSONDecodeError):
             self.send(400,{"error":"Invalid question or scope. Select an available month and territory."})
@@ -115,8 +134,11 @@ def main():
         manifest=generate(args.db)
         print(f"Created {manifest['total_records']:,} reproducible records.",flush=True)
     mode=os.getenv("SIGNAL_AI_MODE","offline")
-    if mode not in ["offline","snowflake"]:
-        raise ValueError("SIGNAL_AI_MODE must be offline or snowflake")
+    if mode not in ["offline","snowflake","snowflake_agent"]:
+        raise ValueError("SIGNAL_AI_MODE must be offline, snowflake or snowflake_agent")
+    if mode=='snowflake_agent':
+        from .snowflake_agent import SnowflakeAgent
+        AI=SnowflakeAgent()
     if mode=="snowflake":
         from .snowflake_ai import SnowflakeAI
         AI=SnowflakeAI()

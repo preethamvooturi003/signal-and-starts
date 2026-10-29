@@ -1,5 +1,7 @@
 # Architecture and decisions
 
+Version 2 adds the [knowledge-first Snowflake architecture](knowledge-first-architecture.md), including the Insights Knowledge Base, validation, native Analyst/Search agent orchestration, counterevidence checks and source snapshots. The original local dashboard and direct AI_COMPLETE adapter described below remain available.
+
 The application starts with a business question, a metric contract and source completeness. It computes evidence deterministically before any model is invited to interpret it.
 
 The Python standard library serves buildless HTML/CSS/JavaScript and JSON APIs on loopback. SQLite is a reproducible local store with indexes for monthly scope queries. It avoids a required paid service or dependency installation for a recruiter trying the project. Snowflake remains an explicit optional integration rather than a simulated live connection.
@@ -12,7 +14,7 @@ The offline assistant detects data-derived signals and routes a supported set of
 
 The optional AI adapter sends a bounded evidence snapshot (summary, query metadata and up to 12 rows per source), six prior messages, and the current question to Snowflake AI_COMPLETE. The model receives source-data boundaries and instructions to distinguish facts, hypotheses and limitations. It never receives SQL execution privileges from the app. A per-process call cap counts failed attempts, and identical prompts use an in-process cache. Citation IDs must be present and allowlisted before a generated answer is displayed. This check does not prove that a citation supports a claim; live semantic evaluation remains required.
 
-The source endpoint recomputes evidence for the cited month/territory; it shows up to 100 rows and exports the complete scoped result as CSV. Evidence is immutable within a static cache, so citations remain stable during a normal session. Do not refresh or regenerate the data mid-conversation; restart after changing the snapshot. Historical conversations are not persisted or versioned.
+Dashboard source endpoints recompute current scoped evidence. Chat answers instead freeze response-specific source cards under an opaque evidence ID, checked against month and territory; up to 200 snapshots are retained in memory. The viewer shows up to 100 rows and exports the complete stored card. Expired snapshots return an explicit error. Conversation history and snapshots are not persisted across restarts.
 
 Snowflake loader and refresh use only constant table names and generated schema metadata. The loader aborts if any target table already contains rows. It bulk uploads staged CSV files, verifies counts, and reconciles starts. Partial loads require manual inspection; there is intentionally no destructive overwrite/retry mode. The refresh validates a separate SQLite cache before switching. Dashboard interactions query the resulting local cache. This keeps trial warehouse activity bounded and makes the backend distinction explicit.
 

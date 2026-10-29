@@ -1,5 +1,7 @@
 # Evaluation: what was actually tested
 
+Version 2 adds nine knowledge/agent tests, for **19 automated test methods** in total. They cover historical publication/scope filters, no future-knowledge leakage, knowledge-first ordering, a contradicted volatility narrative, missing aggregate data, question gating, native request/tool contracts, mandatory post-query Search rechecks, actual query provenance, hidden model-thought filtering, attempted-run limits and explicit offline failure behavior. Native calls are mocked contract tests; they do not verify authentication, actual Snowflake provisioning or live model quality. The HTTP test also verifies frozen K01 source snapshots and rejects a mismatched territory.
+
 Run `python -m unittest discover -s tests -v` and `python -m scripts.evaluate` from the repository root. The evaluator creates data if needed and writes `artifacts/evaluation.json`. A versioned initial snapshot is in [evaluation-results.json](evaluation-results.json).
 
 Ten finite scenario cases test exact sets of detected signals. The runtime investigation receives only evidence and the question. Expected labels stay in the evaluator and are not passed to the assistant. The generator's planted assumptions are discoverable source code; this is a transparent controlled benchmark, not a concealed real-world holdout.
